@@ -9,7 +9,9 @@
 	  "node1",
 	  "node2",
 	  "node3",
-	  "node4"
+	  "node4",
+    "node5",
+    "node6"
   ],
   "consistency": "ss",
   "num_instances": 1,
@@ -21,11 +23,13 @@
   "shards": [
     [
       "node1",
-      "node2"
+      "node2",
+      "node3"
     ],
     [
-      "node3",
-      "node4"
+      "node4",
+      "node5",
+      "node6"
     ]
   ],
   "client_total": 1,
@@ -38,11 +42,13 @@
     "us-east-1": [
       "node0",
       "node1",
-      "node2"
+      "node2",
+      "node3"
     ],
     "eu-west-1": [
-      "node3",
-      "node4"
+      "node4",
+      "node5",
+      "node6"
     ]
   },
   "server_port": 7087,
@@ -130,9 +136,9 @@
   "src_commit_hash": "HEAD",
   "stats_file_name": "stats.json",
   "base_local_exp_directory": "/users/shawnz99/spanner-rss/experiments/results",
-  "base_mounted_fs_path": "/mnt/extra",
-  "base_remote_bin_directory_nfs": "/users/shawnz99/spanner-rss",
-  "base_remote_exp_directory": "/mnt/extra/experiments",
+  "base_mounted_fs_path": "/local/extra",
+  "base_remote_bin_directory_nfs": "/users/shawnz99/EaaS-spanner-rss",
+  "base_remote_exp_directory": "/local/extra/experiments",
   "bin_directory_name": "bin",
   "client_bin_name": "benchmark",
   "client_name_format_str": "%s",
@@ -143,7 +149,7 @@
   "num_experiment_runs": 1,
   "out_directory_name": "out",
   "server_bin_name": "server",
-  "src_directory": "/users/shawnz99/spanner-rss/src",
+  "src_directory": "/users/shawnz99/EaaS-spanner-rss/src",
   "make_collect_bins": [
     "store/benchmark/async/benchmark",
     "store/server"
