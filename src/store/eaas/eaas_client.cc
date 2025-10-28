@@ -711,6 +711,7 @@ int main(int argc, char **argv)
         NOT_REACHABLE();
     }
 
+    /* I don't think we'd need this section */
     uint32_t seed = FLAGS_client_id << 4;
     BenchmarkClient *bench;
     switch (benchMode)
@@ -731,6 +732,8 @@ int main(int argc, char **argv)
         NOT_REACHABLE();
     }
 
+    /* THIS IS HOW THEY START IT? */
+    /* HOW DOES JUICER IMPLEMENT THIS */
     switch (benchMode)
     {
     case BENCH_RETWIS:
