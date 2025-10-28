@@ -1,6 +1,7 @@
 add_subdirectory(common)
 add_subdirectory(strongstore)
 add_subdirectory(benchmark/async)
+add_subdirectory(eaas)
 
 file(GLOB SourceFiles "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
 
