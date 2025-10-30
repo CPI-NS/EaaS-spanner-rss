@@ -675,115 +675,127 @@ int main(int argc, char **argv)
     //     return 1;
     // }
 
+    Client *client = nullptr;
+    auto &shard_config = replica_configs[0];
+    auto &net_config = net_configs[0];
+    auto &client_region = client_regions[0];
+    client = new strongstore::Client(
+         consistency, net_config, client_region, shard_config,
+         FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
+         tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
+
+    strongstore::StrongSession session{};
+    Session sessionx = client -> BeginSession();
+
 
     /* CLIENT IS INITIALLY CREATED HERE */
-    const std::size_t n_instances = replica_configs.size();
-    for (std::size_t i = 0; i < n_instances; ++i)
-    {
-        Client *client = nullptr;
-        switch (mode)
-        {
-        case PROTO_STRONG:
-        {
-            auto &shard_config = replica_configs[i];
-            auto &net_config = net_configs[i];
-            auto &client_region = client_regions[i];
-
-            client = new strongstore::Client(
-                consistency, net_config, client_region, shard_config,
-                FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
-                tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
-            break;
-        }
-        default:
-            NOT_REACHABLE();
-        }
-
-        ASSERT(client != nullptr);
-        clients.push_back(client);
-    }
-
-    switch (benchMode)
-    {
-    case BENCH_RETWIS:
-        break;
-    default:
-        NOT_REACHABLE();
-    }
-
-    /* I don't think we'd need this section */
-    uint32_t seed = FLAGS_client_id << 4;
-    BenchmarkClient *bench;
-    switch (benchMode)
-    {
-    case BENCH_RETWIS:
-        bench = new retwis::RetwisClient(
-            keySelector, clients, FLAGS_message_timeout, *tport, seed,
-            bench_mode,
-            FLAGS_client_switch_probability,
-            FLAGS_client_arrival_rate, FLAGS_client_think_time, FLAGS_client_stay_probability,
-            FLAGS_mpl,
-            FLAGS_exp_duration, FLAGS_warmup_secs, FLAGS_cooldown_secs,
-            FLAGS_tput_interval,
-            FLAGS_abort_backoff, FLAGS_retry_aborted, FLAGS_max_backoff,
-            FLAGS_max_attempts);
-        break;
-    default:
-        NOT_REACHABLE();
-    }
-
-    /* THIS IS HOW THEY START IT? */
-    /* HOW DOES JUICER IMPLEMENT THIS */
-    switch (benchMode)
-    {
-    case BENCH_RETWIS:
-        tport->Timer(0, [bench, bdcb]()
-                     { bench->Start(bdcb); });
-        break;
-    case BENCH_UNKNOWN:
-    default:
-        NOT_REACHABLE();
-    }
-
-    benchClients.push_back(bench);
-
-    if (threads.size() > 0)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(250));
-    }
-
-    tport->Timer(FLAGS_exp_duration * 1000 - 1000, FlushStats);
-    // tport->Timer(FLAGS_exp_duration * 1000, Cleanup);
-
-    std::signal(SIGKILL, Signal);
-    std::signal(SIGTERM, Signal);
-    std::signal(SIGINT, Signal);
-
-    CALLGRIND_START_INSTRUMENTATION;
-    tport->Run();
-    CALLGRIND_STOP_INSTRUMENTATION;
-    CALLGRIND_DUMP_STATS;
-
-    Notice("Cleaning up after experiment.");
-
-    FlushStats();
-
-    delete keySelector;
-    for (auto i : threads)
-    {
-        i->join();
-        delete i;
-    }
-    for (auto i : clients)
-    {
-        delete i;
-    }
-    for (auto i : benchClients)
-    {
-        delete i;
-    }
-    delete tport;
-    delete part;
+//    const std::size_t n_instances = replica_configs.size();
+//    for (std::size_t i = 0; i < n_instances; ++i)
+//    {
+//        Client *client = nullptr;
+//        switch (mode)
+//        {
+//        case PROTO_STRONG:
+//        {
+//            auto &shard_config = replica_configs[i];
+//            auto &net_config = net_configs[i];
+//            auto &client_region = client_regions[i];
+//
+//            client = new strongstore::Client(
+//                consistency, net_config, client_region, shard_config,
+//                FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
+//                tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
+//            break;
+//        }
+//        default:
+//            NOT_REACHABLE();
+//        }
+//
+//        ASSERT(client != nullptr);
+//        clients.push_back(client);
+//    }
+//
+//    switch (benchMode)
+//    {
+//    case BENCH_RETWIS:
+//        break;
+//    default:
+//        NOT_REACHABLE();
+//    }
+//
+//    /* I don't think we'd need this section */
+//    uint32_t seed = FLAGS_client_id << 4;
+//    BenchmarkClient *bench;
+//    switch (benchMode)
+//    {
+//    case BENCH_RETWIS:
+//        bench = new retwis::RetwisClient(
+//            keySelector, clients, FLAGS_message_timeout, *tport, seed,
+//            bench_mode,
+//            FLAGS_client_switch_probability,
+//            FLAGS_client_arrival_rate, FLAGS_client_think_time, FLAGS_client_stay_probability,
+//            FLAGS_mpl,
+//            FLAGS_exp_duration, FLAGS_warmup_secs, FLAGS_cooldown_secs,
+//            FLAGS_tput_interval,
+//            FLAGS_abort_backoff, FLAGS_retry_aborted, FLAGS_max_backoff,
+//            FLAGS_max_attempts);
+//        break;
+//    default:
+//        NOT_REACHABLE();
+//    }
+//
+//    /* THIS IS HOW THEY START IT? */
+//    /* HOW DOES JUICER IMPLEMENT THIS */
+//    switch (benchMode)
+//    {
+//    case BENCH_RETWIS:
+//        tport->Timer(0, [bench, bdcb]()
+//                     { bench->Start(bdcb); });
+//        break;
+//    case BENCH_UNKNOWN:
+//    default:
+//        NOT_REACHABLE();
+//    }
+//
+//    benchClients.push_back(bench);
+//
+//    if (threads.size() > 0)
+//    {
+//        std::this_thread::sleep_for(std::chrono::milliseconds(250));
+//    }
+//
+//    tport->Timer(FLAGS_exp_duration * 1000 - 1000, FlushStats);
+//    // tport->Timer(FLAGS_exp_duration * 1000, Cleanup);
+//
+//    std::signal(SIGKILL, Signal);
+//    std::signal(SIGTERM, Signal);
+//    std::signal(SIGINT, Signal);
+//
+//    CALLGRIND_START_INSTRUMENTATION;
+//    tport->Run();
+//    CALLGRIND_STOP_INSTRUMENTATION;
+//    CALLGRIND_DUMP_STATS;
+//
+//    Notice("Cleaning up after experiment.");
+//
+//    FlushStats();
+//
+//    delete keySelector;
+//    for (auto i : threads)
+//    {
+//        i->join();
+//        delete i;
+//    }
+//    for (auto i : clients)
+//    {
+//        delete i;
+//    }
+//    for (auto i : benchClients)
+//    {
+//        delete i;
+//    }
+//    delete tport;
+//    delete part;
 
     return 0;
 }
