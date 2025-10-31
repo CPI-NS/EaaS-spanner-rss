@@ -684,8 +684,7 @@ int main(int argc, char **argv)
          FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
          tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
 
-    strongstore::StrongSession session{};
-    Session sessionx = client -> BeginSession();
+    auto &session = client->BeginSession();
 
 
     /* CLIENT IS INITIALLY CREATED HERE */
