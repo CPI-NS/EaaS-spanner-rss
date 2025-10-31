@@ -216,7 +216,8 @@ DEFINE_validator(partitioner, &ValidatePartitioner);
 DEFINE_string(keys_path, "",
               "path to file containing keys in the system"
               " (for retwis)");
-DEFINE_uint64(num_keys, 0, "number of keys to generate (for retwis");
+//DEFINE_uint64(num_keys, 0, "number of keys to generate (for retwis");
+DEFINE_uint64(num_keys, 10, "number of keys to generate (for retwis");
 
 const std::string keys_args[] = {"uniform", "zipf"};
 const keysmode_t keysmodes[]{KEYS_UNIFORM, KEYS_ZIPF};
