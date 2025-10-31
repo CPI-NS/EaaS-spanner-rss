@@ -685,6 +685,19 @@ int main(int argc, char **argv)
          tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
 
     auto &session = client->BeginSession();
+    client->Begin(session, bdcb, bdcb, 3);
+
+    put_callback pcb = [](int x, const std::string y, const std::string z){};
+    put_timeout_callback ptcb = [](int x, const std::string y, const std::string z){};
+    client->Put(session, "hello", "world", pcb, ptcb, 5);
+
+    get_callback gcb = [](int x, const std::string y, const std::string z, Timestamp ts){};
+    get_timeout_callback gtcb = [](int x, const std::string y){};
+    client->Get(session, "hello", gcb, gtcb, 5);
+
+    commit_callback ccb = [](transaction_status_t t){};
+    commit_timeout_callback ctcb = [](){};
+    client -> Commit(session, ccb, ctcb, 5);
 
 
     /* CLIENT IS INITIALLY CREATED HERE */
