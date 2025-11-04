@@ -702,32 +702,34 @@ int main(int argc, char **argv)
 
 
     /* CLIENT IS INITIALLY CREATED HERE */
-//    const std::size_t n_instances = replica_configs.size();
-//    for (std::size_t i = 0; i < n_instances; ++i)
-//    {
-//        Client *client = nullptr;
-//        switch (mode)
-//        {
-//        case PROTO_STRONG:
-//        {
-//            auto &shard_config = replica_configs[i];
-//            auto &net_config = net_configs[i];
-//            auto &client_region = client_regions[i];
-//
-//            client = new strongstore::Client(
-//                consistency, net_config, client_region, shard_config,
-//                FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
-//                tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
-//            break;
-//        }
-//        default:
-//            NOT_REACHABLE();
-//        }
-//
-//        ASSERT(client != nullptr);
-//        clients.push_back(client);
-//    }
-//
+    // I think we would still use these clients
+    const std::size_t n_instances = replica_configs.size();
+    for (std::size_t i = 0; i < n_instances; ++i)
+    {
+        Client *client = nullptr;
+        switch (mode)
+        {
+        case PROTO_STRONG:
+        {
+            auto &shard_config = replica_configs[i];
+            auto &net_config = net_configs[i];
+            auto &client_region = client_regions[i];
+
+            client = new strongstore::Client(
+                consistency, net_config, client_region, shard_config,
+                FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
+                tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
+            break;
+        }
+        default:
+            NOT_REACHABLE();
+        }
+
+        ASSERT(client != nullptr);
+        clients.push_back(client);
+    }
+
+
 //    switch (benchMode)
 //    {
 //    case BENCH_RETWIS:
@@ -811,6 +813,31 @@ int main(int argc, char **argv)
 //    delete part;
 
     return 0;
+}
+
+int BeginTransaction() {
+  return 0;
+  //return eaas::EAAS_W_EC_SUCCES;
+}
+
+int CommitTransaction() {
+  return 0;
+  //return eaas::EAAS_W_EC_SUCCESS;
+}
+
+int RollbackTransaction() {
+  return 0;
+  //return eaas::EAAS_W_EC_SUCCESS;
+}
+
+int Get(int64_t key, int columns[], int size, int result[]) {
+  return 0;
+  //return eaas::EAAS_W_EC_SUCCESS;
+}
+
+int Put(int64_t key, int columns[], int values[], int size) {
+  return 0;
+  //return eaas::EAAS_W_EC_SUCCESS;
 }
 
 void Signal(int signal)
