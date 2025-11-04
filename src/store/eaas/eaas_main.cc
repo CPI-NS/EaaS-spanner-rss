@@ -676,30 +676,20 @@ int main(int argc, char **argv)
     //     return 1;
     // }
 
-    Client *client = nullptr;
-    auto &shard_config = replica_configs[0];
-    auto &net_config = net_configs[0];
-    auto &client_region = client_regions[0];
-    client = new strongstore::Client(
-         consistency, net_config, client_region, shard_config,
-         FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
-         tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
+    /* BEGIN TEST CLIENT */
+    /* Creating a test client but I think the loop below will work fine */
+    //Client *client = nullptr;
+    //auto &shard_config = replica_configs[0];
+    //auto &net_config = net_configs[0];
+    //auto &client_region = client_regions[0];
+    //client = new strongstore::Client(
+    //     consistency, net_config, client_region, shard_config,
+    //     FLAGS_client_id, FLAGS_num_shards, FLAGS_closest_replica,
+    //     tport, part, tt, FLAGS_debug_stats, FLAGS_nb_time_alpha);
+    /* END TEST CLIENT */
 
-    auto &session = client->BeginSession();
-    client->Begin(session, bdcb, bdcb, 3);
 
-    put_callback pcb = [](int x, const std::string y, const std::string z){};
-    put_timeout_callback ptcb = [](int x, const std::string y, const std::string z){};
-    client->Put(session, "hello", "world", pcb, ptcb, 5);
-
-    get_callback gcb = [](int x, const std::string y, const std::string z, Timestamp ts){};
-    get_timeout_callback gtcb = [](int x, const std::string y){};
-    client->Get(session, "hello", gcb, gtcb, 5);
-
-    commit_callback ccb = [](transaction_status_t t){};
-    commit_timeout_callback ctcb = [](){};
-    client -> Commit(session, ccb, ctcb, 5);
-
+    //TODO: Do requests need to get sent to every replica? 
 
     /* CLIENT IS INITIALLY CREATED HERE */
     // I think we would still use these clients
@@ -728,6 +718,21 @@ int main(int argc, char **argv)
         ASSERT(client != nullptr);
         clients.push_back(client);
     }
+
+    auto &session = client->BeginSession();
+    client->Begin(session, bdcb, bdcb, 3);
+
+    put_callback pcb = [](int x, const std::string y, const std::string z){};
+    put_timeout_callback ptcb = [](int x, const std::string y, const std::string z){};
+    client->Put(session, "hello", "world", pcb, ptcb, 5);
+
+    get_callback gcb = [](int x, const std::string y, const std::string z, Timestamp ts){};
+    get_timeout_callback gtcb = [](int x, const std::string y){};
+    client->Get(session, "hello", gcb, gtcb, 5);
+
+    commit_callback ccb = [](transaction_status_t t){};
+    commit_timeout_callback ctcb = [](){};
+    client -> Commit(session, ccb, ctcb, 5);
 
 
 //    switch (benchMode)
